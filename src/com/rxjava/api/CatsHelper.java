@@ -11,13 +11,18 @@ import java.util.List;
  */
 public class CatsHelper {
 
-    Api api;
+    private Api api;
 
     public Uri saveTheCutestCat(String query) {
-        List<Cat> cats = api.queryCats(query);
-        Cat cutest = findCutest(cats);
-        Uri savedUri = api.store(cutest);
-        return savedUri;
+        try {
+            List<Cat> cats = api.queryCats(query);
+            Cat cutest = findCutest(cats);
+            Uri savedUri = api.store(cutest);
+            return savedUri;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private Cat findCutest(List<Cat> cats) {
