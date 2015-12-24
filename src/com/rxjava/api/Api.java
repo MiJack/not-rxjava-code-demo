@@ -9,7 +9,14 @@ import java.util.List;
  * Created by MiJack on 2015/12/24.
  */
 public interface Api {
-    List<Cat> queryCats(String query);
+    interface CatsQueryCallback {
+        void onCatListReceived(List<Cat> cats);
+
+        void onQueryFailed(Exception e);
+    }
+
+
+    void queryCats(String query, CatsQueryCallback catsQueryCallback);
 
     Uri store(Cat cat);
 }

@@ -11,18 +11,28 @@ import java.util.List;
  */
 public class CatsHelper {
 
-    private Api api;
+    public interface CutestCatCallback {
+        void onCutestCatSaved(Uri uri);
 
-    public Uri saveTheCutestCat(String query) {
-        try {
-            List<Cat> cats = api.queryCats(query);
-            Cat cutest = findCutest(cats);
-            Uri savedUri = api.store(cutest);
-            return savedUri;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        void onQueryFailed(Exception e);
+    }
+
+    Api api;
+
+    public void saveTheCutestCat(String query, CutestCatCallback cutestCatCallback) {
+        api.queryCats(query, new Api.CatsQueryCallback() {
+            @Override
+            public void onCatListReceived(List<Cat> cats) {
+                Cat cutest = findCutest(cats);
+                Uri savedUri = api.store(cutest);
+                cutestCatCallback.onCutestCatSaved(savedUri);
+            }
+
+            @Override
+            public void onQueryFailed(Exception e) {
+                cutestCatCallback.onQueryFailed(e);
+            }
+        });
     }
 
     private Cat findCutest(List<Cat> cats) {
