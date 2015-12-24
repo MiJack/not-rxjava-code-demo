@@ -15,8 +15,13 @@ public interface Api {
         void onQueryFailed(Exception e);
     }
 
+    interface StoreCallback {
+        void onCatStored(Uri uri);
+
+        void onStoreFailed(Exception e);
+    }
 
     void queryCats(String query, CatsQueryCallback catsQueryCallback);
 
-    Uri store(Cat cat);
+    void store(Cat cat, StoreCallback storeCallback);
 }
