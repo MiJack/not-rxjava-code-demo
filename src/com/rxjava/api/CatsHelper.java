@@ -15,22 +15,13 @@ public class CatsHelper {
 
     public AsyncJob<Uri> saveTheCutestCat(String query) {
         AsyncJob<List<Cat>> catsListAsyncJob = apiWrapper.queryCats(query);
-        AsyncJob<Cat> cutestCatAsyncJob = new AsyncJob<Cat>() {
+        AsyncJob<Cat> cutestCatAsyncJob = catsListAsyncJob.map(new Func<List<Cat>, Cat>() {
             @Override
-            public void start(Callback<Cat> callback) {
-                catsListAsyncJob.start(new Callback<List<Cat>>() {
-                    @Override
-                    public void onResult(List<Cat> result) {
-                        callback.onResult(findCutest(result));
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        callback.onError(e);
-                    }
-                });
+            public Cat call(List<Cat> cats) {
+                return findCutest(cats);
             }
-        };
+        });
+
         AsyncJob<Uri> storedUriAsyncJob = new AsyncJob<Uri>() {
             @Override
             public void start(Callback<Uri> cutestCatCallback) {
